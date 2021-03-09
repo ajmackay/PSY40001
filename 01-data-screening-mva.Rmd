@@ -3,7 +3,7 @@
 ## Part 1: Data Exploration {-#mPart1}
 ### Importing SPSS file into R {-#mImport}
 The packages that we will use for this week's exercises are as follows:
-```{r library, echo=FALSE, message=FALSE, include=TRUE}
+```{r library, message=FALSE}
 library(tidyverse) # For general functions
 library(haven) # For importing SPSS file into R
 library(table1) # For Missing Data Table
