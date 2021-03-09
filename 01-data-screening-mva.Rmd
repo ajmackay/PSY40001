@@ -1,0 +1,244 @@
+# Data Screening and Missing Values
+
+## Part 1: Data Exploration {-#mPart1}
+### Importing SPSS file into R {-#mImport}
+The packages that we will use for this week's exercises are as follows:
+```{r library, echo=FALSE, message=FALSE, include=TRUE}
+library(tidyverse) # For general functions
+library(haven) # For importing SPSS file into R
+library(table1) # For Missing Data Table
+library(naniar) # Visualising missing data
+```
+Importing SPSS files into R is easy with the <code>haven</code> package. 
+
+```{r spss import}
+lab1_raw <- read_sav("data/lab1data.sav");
+
+head(lab1_raw)
+```
+
+### Set Up Missing Values {-#mMissing-Values}
+R automatically codes missing values with the "NA" symbol.  While this can make things easier when running certain analyses, it does restrict us in the sense that we cannot easily define what a specific missing value represents (for example, we are unable to distinguish a missing value that is due to a participant refusing to answer the question with a missing value that was due to the researcher forgetting to ask).
+
+We can, however easily see how many missing values there are for each variable in our dataset:
+
+```{r missing-values}
+summary(lab1_raw);
+```
+
+### Modyfing the data {-#mModify}
+#### Insert new Variable {-#mNew-variable}
+To create new variables inside a dataframe in R, we can use the <code>mutate</code> function.
+
+```{r new-variable}
+lab1_mod <- lab1_raw %>%
+  mutate(dog = NA);
+```
+
+And if we want to rearrange our variables so that "dog" is next to "nicname" we can do so by specifying the order of the index.
+
+```{r rearrange-variables}
+lab1_mod <- lab1_mod[,c(1,8,2:7)]
+head(lab1_mod);
+```
+
+#### Inputting Data {-#mInputting}
+Inputting data manually is not as intuitive in R as it is in SPSS as you cannot just click and edit specific entries.  While this may seem cumbersome at first, it does ensure that you cannot accidentally delete or edit entries and any editting that is performed is documented (as long as you are saving the syntax).
+
+In this case, we just need a random assortment of "True" and "False" for our dog variable.  This can be achieved with the "sample" function.
+
+```{r dog-random}
+set.seed(1)
+
+lab1_mod$dog <- c(sample(c("True", "False"), 41, replace = TRUE));
+
+head(lab1_mod)
+```
+
+And if we want to edit a specific entry, we can do so by specifying the corresponding index.
+
+```{r dog-edit-entry}
+lab1_mod$dog[3] <- "FALSE"
+lab1_mod$dog[3];
+```
+
+Or you can use the "which" function to return the index.
+
+```{r which}
+lab1_mod$nicname[which(lab1_mod$nicname == "dusty")] <- "doodles"
+
+head(lab1_mod$nicname)
+```
+
+#### Compute new Variable {-#mCompute-new}
+The "mutate" function makes it easy to create new variables from existing variables.
+
+```{r diffmark}
+lab1_mod <- lab1_mod %>%
+  mutate(diffmark = prevmark - hopemark);
+
+head(lab1_mod)
+```
+
+```{r remove-label, include = FALSE}
+attr(lab1_mod[[9]], "label") <- "Difference Mark" #Editing the label of the variable
+```
+
+#### Edit Variable name* {-#mEdit-Name}
+**This was not part of the week 1 lab, but the variable name "vegitarian" could use a little correcting!*
+
+```{r edit-col-name}
+colnames(lab1_mod)[colnames(lab1_mod) == "vegitarian"] <- "vegetarian"
+colnames(lab1_mod)
+```
+
+## Part 2: Missing Value Analysis {-#mPart2}
+### Univariate Statistics {-#mUnivariate} 
+
+The <code>table1</code> package allows us to quickly and easily see the number of missing values and their respective proportions.
+
+```{r univariate-missing}
+table1::table1(~height + prevmark + hopemark + border + sex + vegetarian, data = lab1_mod);
+```
+
+### Separate Variance T-Tests {-#mSVTT}
+Unfortunately I am yet to find a simple way to perform these tests in R.  If you have any ideas as to how to get an output similar to the one shown in SPSS then please feel free to add them here!
+
+### Missing and Tabulated Patterns {-#mTabulated-Patterns}
+The <code>naniar</code> package provides easy to use tools to visualise the pattern of missing data in a similar way to the "Tabulated Patterns" table in SPSS.  
+
+```{r naniar}
+lab1_mod %>%
+  select(height, prevmark, hopemark, border, sex, vegetarian) %>%
+  vis_miss();
+
+gg_miss_upset(lab1_mod)
+```
+
+### Little's MCAR Test {-#mMcar}
+Unfortunately again I was not able to find much in regards to a simple way to perform Little's MCAR test on the missing data.  The closest that I got was to <a href = https://github.com/rcst/little-test.git> this person's github</a> who has created a function to perform the test.  I have used it below and as you can see it returns similar (but not the same) results as the test in SPSS, however I cannot vouch for the mathematical reliability of the function. 
+
+```{r little-mcar, include=FALSE, echo=FALSE}
+mcar <- function(x){ 
+  if(!require(norm)) {
+    stop("You must have norm installed to use LittleMCAR") 
+  } 
+  
+  # if(!require(data.table)) {
+  # 	stop("Please install the R-package data.table to use mcar")
+  # }
+  
+  if(!(is.matrix(x) | is.data.frame(x))) {
+    stop("Data should be a matrix or dataframe")
+  }
+  
+  if (is.data.frame(x)){
+    x <- data.matrix(x)
+  }
+  
+  # delete rows of complete missingness
+  foo <- function(x) return(any(!is.na(x)))
+  dd <- apply(X = x, MARGIN = 1L, FUN = foo)
+  dd <- which(!dd, arr.ind = TRUE)
+  if(length(dd) > 0) 
+    x <- x[-dd,]
+  
+  # define variables        
+  n.var <- ncol(x) # number of variables
+  n <- nrow(x)  #number of respondents
+  var.names <- colnames(x)
+  r <- 1 * is.na(x)
+  
+  nmis <- as.integer(apply(r, 2, sum))  #number of missing data for each variable REWRITE
+  mdp <- (r %*% (2^((1:n.var - 1)))) + 1  #missing data patterns
+  x.mp <- data.frame(cbind(x,mdp)) # add column indicating pattern
+  colnames(x.mp) <- c(var.names,"MisPat") # set name of new column to MisPat
+  n.mis.pat <- length(unique(x.mp$MisPat)) # number of missing data patterns
+  p <- n.mis.pat-1 # number of Missing Data patterns minus 1 (complete data row)
+  
+  
+  s <- prelim.norm(x)
+  ll <- em.norm(s)
+  fit <- getparam.norm(s = s, theta = ll)
+  
+  # gmean<-mlest(x)$muhat #ML estimate of grand mean (assumes Normal dist)
+  gmean <- fit$mu
+  # gcov<-mlest(x)$sigmahat #ML estimate of grand covariance (assumes Normal dist)
+  gcov <- fit$sigma
+  colnames(gcov) <- rownames(gcov) <- colnames(x)
+  
+  #recode MisPat variable to go from 1 through n.mis.pat
+  x.mp$MisPat2 <- rep(NA,n)
+  for (i in 1:n.mis.pat){ 
+    x.mp$MisPat2[x.mp$MisPat == sort(unique(x.mp$MisPat), partial=(i))[i]]<- i 
+  }
+  
+  x.mp$MisPat<-x.mp$MisPat2
+  x.mp<-x.mp[ , -which(names(x.mp) %in% "MisPat2")]
+  
+  #make list of datasets for each pattern of missing data
+  datasets <- list() 
+  for (i in 1:n.mis.pat){
+    datasets[[paste("DataSet",i,sep="")]]<-x.mp[which(x.mp$MisPat==i),1:n.var]
+  }
+  
+  #degrees of freedom
+  kj<-0
+  for (i in 1:n.mis.pat){	
+    no.na<-as.matrix(1* !is.na(colSums(datasets[[i]]))) 
+    kj<-kj+colSums(no.na) 
+  }
+  
+  df<-kj -n.var
+  
+  #Little's chi-square
+  d2<-0
+  cat("this could take a while")
+  
+  # this crashes at the missingness pattern where every column is missing
+  # this for-loop can be handled faster with plyr-function
+  for (i in 1:n.mis.pat){	
+    mean <- (colMeans(datasets[[i]])-gmean) 
+    mean <- mean[!is.na(mean)] 
+    keep <- 1* !is.na(colSums(datasets[[i]])) 
+    keep <- keep[which(keep[1:n.var]!=0)] 
+    cov <- gcov 
+    cov <- cov[which(rownames(cov) %in% names(keep)) , which(colnames(cov) %in% names(keep))] 
+    d2 <- as.numeric(d2+(sum(x.mp$MisPat==i)*(t(mean)%*%solve(cov)%*%mean)))
+  }
+  
+  #p-value for chi-square
+  p.value<-1-pchisq(d2,df)
+  
+  #descriptives of missing data
+  amount.missing <- matrix(nmis, 1, length(nmis))
+  percent.missing <- amount.missing/n
+  amount.missing <- rbind(amount.missing,percent.missing)
+  colnames(amount.missing) <- var.names
+  rownames(amount.missing) <- c("Number Missing", "Percent Missing")
+  
+  list(chi.square = d2, 
+       df = df, 
+       p.value = p.value, 
+       missing.patterns = n.mis.pat, 
+       amount.missing = amount.missing, 
+       data = datasets)
+}
+```
+
+```{r little-mcar-test, message=FALSE, warning=FALSE}
+lab1_mcar <- lab1_mod %>%
+  select(height, prevmark, hopemark, border);
+
+lab1_mcar <- mcar(lab1_mcar);
+```
+
+```{r little-results}
+
+data.frame(chi_square = lab1_mcar[["chi.square"]],
+           df = lab1_mcar[["df"]],
+           p_value = lab1_mcar[["p.value"]]);
+```
+
+
+

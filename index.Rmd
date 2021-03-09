@@ -1,6 +1,6 @@
 --- 
-title: "A Minimal Book Example"
-author: "Yihui Xie"
+title: "PSY40001 SPSS to R notes"
+author: "Aaron Mackay"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
@@ -10,25 +10,18 @@ link-citations: yes
 description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
 ---
 
-# Prerequisites
-
-This is a _sample_ book written in **Markdown**. You can use anything that Pandoc's Markdown supports, e.g., a math equation $a^2 + b^2 = c^2$.
-
-The **bookdown** package can be installed from CRAN or Github:
-
-```{r eval=FALSE}
-install.packages("bookdown")
-# or the development version
-# devtools::install_github("rstudio/bookdown")
+```{r bookdown, message=FALSE, warning=FALSE, include=FALSE}
+library(bookdown) # For this notebook
 ```
 
-Remember each Rmd file contains one and only one chapter, and a chapter is defined by the first-level heading `#`.
+# Introduction {-#mIntro}
 
-To compile this example to PDF, you need XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): <https://yihui.org/tinytex/>.
+The aim of this book is to go through each week's PSY40001 lab and to recreate (or at least try to recreate) the exercises and output performed in SPSS in R.  Depending on how intense the lab is (and how much spare time I have) I will aim to update this book before the following weeks lab.  <a href = https://github.com/ajmackay/PSY40001.git> I have made this book public on github so feel free to download the code and add or edit anything. </a>
 
-```{r include=FALSE}
-# automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
-), 'packages.bib')
-```
+This book assumes a basic understanding as to how R and RStudio work, however I will endevour to make the steps as easy to follow as possible.  If you have any questions then please feel free to reach out and email me at mackay_aaron@protonmail.com
+
+Enjoy!
+
+Aaron
+
+***
