@@ -4,3 +4,7 @@ wk-3
 wk-4
 wk-5
 wk-6
+m-data-screening
+conducting-a-multiple-regression
+tab:missing-values
+data-screening

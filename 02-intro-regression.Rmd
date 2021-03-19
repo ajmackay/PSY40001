@@ -1,1 +1,25 @@
 # Intro to Regression
+The packages that we will use for this week's exercises are as follows:
+```{r library, message=FALSE}
+library(tidyverse) # For general functions
+library(haven) # For importing SPSS file into R
+library(apaTables) # for converting output into APA style
+```
+
+Inporting data:
+```{r data-import}
+lab2_raw <- read_sav("data/lab2data.sav");
+```
+
+## Data Screening {-}
+We did this last week so we won't go throught it again...
+
+## Conducting a Multiple Regression
+I haven't yet found a way to have all the regression output as nicely formatted as it appears in SPSS.  The closest I could get was to save the regression output in a separate APA formatted document, which I achieved with using the function <code>apa.reg.table</code> located in the **apaTables** package.  The APA output is saved in a folder called "output" which you can access from <a href = https://github.com/ajmackay/PSY40001.git>gitHub</a> if you so desire.
+
+```{r multiple-regression}
+lab2.lm <- lm(anxiety ~ socialid + selfest + raceab + CBT, data = lab2_raw); #Saving Linear Model in lab2.lm object
+
+apa.reg.table(lab2.lm, filename = "output/wk2/Multiple-Regression.doc", table.number = 4)
+
+```

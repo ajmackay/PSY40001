@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Week 2 Intro to Regression | PSY40001 SPSS to R notes</title>
+  <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Week 2 Intro to Regression | PSY40001 SPSS to R notes" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Week 2 Intro to Regression | PSY40001 SPSS to R notes" />
+  
+  <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Aaron Mackay" />
+
+
+<meta name="date" content="2021-03-19" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="data-screening-and-missing-values.html"/>
+<link rel="next" href="wk-3.html"/>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">PSY40001: SPSS to R Lab</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="1" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html"><i class="fa fa-check"></i><b>1</b> Data Screening and Missing Values</a>
+<ul>
+<li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mPart1"><i class="fa fa-check"></i>Part 1: Data Exploration</a>
+<ul>
+<li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mImport"><i class="fa fa-check"></i>Importing SPSS file into R</a></li>
+<li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mMissing-Values"><i class="fa fa-check"></i>Set Up Missing Values</a></li>
+<li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mModify"><i class="fa fa-check"></i>Modyfing the data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mPart2"><i class="fa fa-check"></i>Part 2: Missing Value Analysis</a>
+<ul>
+<li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mUnivariate"><i class="fa fa-check"></i>Univariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mSVTT"><i class="fa fa-check"></i>Separate Variance T-Tests</a></li>
+<li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mTabulated-Patterns"><i class="fa fa-check"></i>Missing and Tabulated Patterns</a></li>
+<li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mMcar"><i class="fa fa-check"></i>Little’s MCAR Test</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="intro-to-regression.html"><a href="intro-to-regression.html"><i class="fa fa-check"></i><b>2</b> Intro to Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro-to-regression.html"><a href="intro-to-regression.html#data-screening"><i class="fa fa-check"></i>Data Screening</a></li>
+<li class="chapter" data-level="2.1" data-path="intro-to-regression.html"><a href="intro-to-regression.html#conducting-a-multiple-regression"><i class="fa fa-check"></i><b>2.1</b> Conducting a Multiple Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="wk-3.html"><a href="wk-3.html"><i class="fa fa-check"></i><b>3</b> Wk 3</a></li>
+<li class="chapter" data-level="4" data-path="wk-4.html"><a href="wk-4.html"><i class="fa fa-check"></i><b>4</b> Wk 4</a></li>
+<li class="chapter" data-level="5" data-path="wk-5.html"><a href="wk-5.html"><i class="fa fa-check"></i><b>5</b> Wk 5</a></li>
+<li class="chapter" data-level="6" data-path="wk-6.html"><a href="wk-6.html"><i class="fa fa-check"></i><b>6</b> Wk 6</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">PSY40001 SPSS to R notes</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="intro-to-regression" class="section level1" number="2">
+<h1><span class="header-section-number">Week 2</span> Intro to Regression</h1>
+<p>The packages that we will use for this week’s exercises are as follows:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="intro-to-regression.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># For general functions</span></span>
+<span id="cb1-2"><a href="intro-to-regression.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven) <span class="co"># For importing SPSS file into R</span></span>
+<span id="cb1-3"><a href="intro-to-regression.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(apaTables) <span class="co"># for converting output into APA style</span></span></code></pre></div>
+<p>Inporting data:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="intro-to-regression.html#cb2-1" aria-hidden="true" tabindex="-1"></a>lab2_raw <span class="ot">&lt;-</span> <span class="fu">read_sav</span>(<span class="st">&quot;data/lab2data.sav&quot;</span>);</span></code></pre></div>
+<div id="data-screening" class="section level2 unnumbered">
+<h2>Data Screening</h2>
+<p>We did this last week so we won’t go throught it again…</p>
+</div>
+<div id="conducting-a-multiple-regression" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Conducting a Multiple Regression</h2>
+<p>I haven’t yet found a way to have all the regression output as nicely formatted as it appears in SPSS. The closest I could get was to save the regression output in a separate APA formatted document, which I achieved with using the function <code>apa.reg.table</code> located in the <strong>apaTables</strong> package. The APA output is saved in a folder called “output” which you can access from <a href = https://github.com/ajmackay/PSY40001.git>gitHub</a> if you so desire.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="intro-to-regression.html#cb3-1" aria-hidden="true" tabindex="-1"></a>lab2.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(anxiety <span class="sc">~</span> socialid <span class="sc">+</span> selfest <span class="sc">+</span> raceab <span class="sc">+</span> CBT, <span class="at">data =</span> lab2_raw); <span class="co">#Saving Linear Model in lab2.lm object</span></span>
+<span id="cb3-2"><a href="intro-to-regression.html#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="intro-to-regression.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">apa.reg.table</span>(lab2.lm, <span class="at">filename =</span> <span class="st">&quot;output/wk2/Multiple-Regression.doc&quot;</span>, <span class="at">table.number =</span> <span class="dv">4</span>)</span></code></pre></div>
+<pre><code>## 
+## 
+## Table 4 
+## 
+## Regression results using anxiety as the criterion
+##  
+## 
+##    Predictor       b       b_95%_CI beta   beta_95%_CI sr2  sr2_95%_CI
+##  (Intercept) 18.45** [16.62, 20.27]                                   
+##     socialid   0.18*   [0.03, 0.32] 0.20  [0.03, 0.37] .02 [-.01, .06]
+##      selfest  0.61**   [0.38, 0.84] 0.54  [0.34, 0.75] .11  [.03, .19]
+##       raceab    0.05  [-0.13, 0.24] 0.05 [-0.12, 0.21] .00 [-.01, .01]
+##          CBT  0.15**   [0.07, 0.23] 0.26  [0.13, 0.39] .06 [-.00, .12]
+##                                                                       
+##                                                                       
+##                                                                       
+##      r             Fit
+##                       
+##  .64**                
+##  .79**                
+##  .49**                
+##  .46**                
+##            R2 = .701**
+##        95% CI[.57,.76]
+##                       
+## 
+## Note. A significant b-weight indicates the beta-weight and semi-partial correlation are also significant.
+## b represents unstandardized regression weights. beta indicates the standardized regression weights. 
+## sr2 represents the semi-partial correlation squared. r represents the zero-order correlation.
+## Square brackets are used to enclose the lower and upper limits of a confidence interval.
+## * indicates p &lt; .05. ** indicates p &lt; .01.
+## </code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="data-screening-and-missing-values.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="wk-3.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["PSY40001.pdf", "PSY40001.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

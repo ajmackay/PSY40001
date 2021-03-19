@@ -1,20 +1,24 @@
 # Data Screening and Missing Values
-
-## Part 1: Data Exploration {-#mPart1}
-### Importing SPSS file into R {-#mImport}
 The packages that we will use for this week's exercises are as follows:
-```{r library, message=FALSE}
+```{r lib, message = FALSE}
 library(tidyverse) # For general functions
 library(haven) # For importing SPSS file into R
 library(table1) # For Missing Data Table
 library(naniar) # Visualising missing data
+library(knitr) # For general tables
 ```
+
+## Part 1: Data Exploration {-#mPart1}
+### Importing SPSS file into R {-#mImport}
+
 Importing SPSS files into R is easy with the <code>haven</code> package. 
 
 ```{r spss import}
 lab1_raw <- read_sav("data/lab1data.sav");
 
-head(lab1_raw)
+knitr::kable(
+  head(lab1_raw)
+);
 ```
 
 ### Set Up Missing Values {-#mMissing-Values}
@@ -23,7 +27,10 @@ R automatically codes missing values with the "NA" symbol.  While this can make 
 We can, however easily see how many missing values there are for each variable in our dataset:
 
 ```{r missing-values}
-summary(lab1_raw);
+knitr::kable(
+summary(lab1_raw),
+caption = "Summary of Raw Data"
+);
 ```
 
 ### Modyfing the data {-#mModify}
@@ -39,7 +46,10 @@ And if we want to rearrange our variables so that "dog" is next to "nicname" we 
 
 ```{r rearrange-variables}
 lab1_mod <- lab1_mod[,c(1,8,2:7)]
-head(lab1_mod);
+
+knitr::kable(
+  head(lab1_mod)
+);
 ```
 
 #### Inputting Data {-#mInputting}
@@ -52,7 +62,9 @@ set.seed(1)
 
 lab1_mod$dog <- c(sample(c("True", "False"), 41, replace = TRUE));
 
-head(lab1_mod)
+knitr::kable(
+  head(lab1_mod)
+);
 ```
 
 And if we want to edit a specific entry, we can do so by specifying the corresponding index.
@@ -77,7 +89,9 @@ The "mutate" function makes it easy to create new variables from existing variab
 lab1_mod <- lab1_mod %>%
   mutate(diffmark = prevmark - hopemark);
 
-head(lab1_mod)
+knitr::kable(
+  head(lab1_mod)
+);
 ```
 
 ```{r remove-label, include = FALSE}
