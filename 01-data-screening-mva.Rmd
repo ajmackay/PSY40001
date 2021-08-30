@@ -3,7 +3,6 @@ The packages that we will use for this week's exercises are as follows:
 ```{r lib, message = FALSE}
 library(tidyverse) # For general functions
 library(haven) # For importing SPSS file into R
-library(table1) # For Missing Data Table
 library(naniar) # Visualising missing data
 library(knitr) # For general tables
 ```

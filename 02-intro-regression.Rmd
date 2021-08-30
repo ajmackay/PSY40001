@@ -1,9 +1,8 @@
 # Intro to Regression
-The packages that we will use for this week's exercises are as follows:
+The packages that I used for this week's exercises are as follows:
 ```{r library, message=FALSE}
 library(tidyverse) # For general functions
 library(haven) # For importing SPSS file into R
-library(apaTables) # for converting output into APA style
 ```
 
 Inporting data:
@@ -12,14 +11,44 @@ lab2_raw <- read_sav("data/lab2data.sav");
 ```
 
 ## Data Screening {-}
-We did this last week so we won't go throught it again...
+Quick way to see if any variables have missing data
+
+```{r screening}
+apply(is.na(lab2_raw), 2, which);
+```
+And we can see that the observation 59 has missing data for Anxiety.  For the sake of our analysis we will just remove this observation (Which is what I believe we did in the Lab);
+
+```{r}
+lab2 <- lab2_raw %>%
+  na.omit()
+
+sum(is.na(lab2$anxiety)) # Just testing that we did remove the NA
+```
 
 ## Conducting a Multiple Regression
 I haven't yet found a way to have all the regression output as nicely formatted as it appears in SPSS.  The closest I could get was to save the regression output in a separate APA formatted document, which I achieved with using the function <code>apa.reg.table</code> located in the **apaTables** package.  The APA output is saved in a folder called "output" which you can access from <a href = https://github.com/ajmackay/PSY40001.git>gitHub</a> if you so desire.
 
+### Descriptives
+```{r descriptives}
+table1::table1(~anxiety + raceab + socialid + selfest + CBT, data = lab2)
+```
+
+### Multiple Regression
+The following table provides all the numbers needed to fill in the worksheet.
 ```{r multiple-regression}
 lab2.lm <- lm(anxiety ~ socialid + selfest + raceab + CBT, data = lab2_raw); #Saving Linear Model in lab2.lm object
 
-apa.reg.table(lab2.lm, filename = "output/wk2/Multiple-Regression.doc", table.number = 4)
-
+summary(lab2.lm)
 ```
+#### Output rundown {-}
+##### Residuals {-}
+If the residuals are roughly centered around zero and have a similar spread on each side then the model probably fits the assumption of homoscedasticity.
+
+##### Coefficients {-}
+**Estimate:** The estimated effect (aka regression coefficient).  Tells us how much the DV increases/decreases per one point increase in the predictor (controlling for other predictors).
+
+**Std. Error:** The standard error of the estimate (regression coefficient).  Indicates how much variation there is around the estimate.
+
+**t-value:** Displays the test statistic.  By default, the test statistic will be the t-value from a two-sided t-test.  The larger the test statistic, the less likely that the results were from chance alone.
+
+**Pr(>|t|):** P-value

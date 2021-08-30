@@ -8,3 +8,5 @@ m-data-screening
 conducting-a-multiple-regression
 tab:missing-values
 data-screening
+descriptives
+multiple-regression
