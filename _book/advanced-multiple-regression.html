@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Page not found | PSY40001 SPSS to R notes</title>
+  <title>Week 3 Advanced Multiple Regression | PSY40001 SPSS to R notes</title>
   <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Page not found | PSY40001 SPSS to R notes" />
+  <meta property="og:title" content="Week 3 Advanced Multiple Regression | PSY40001 SPSS to R notes" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Page not found | PSY40001 SPSS to R notes" />
+  <meta name="twitter:title" content="Week 3 Advanced Multiple Regression | PSY40001 SPSS to R notes" />
   
   <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-
+<link rel="prev" href="intro-to-regression.html"/>
+<link rel="next" href="wk-4.html"/>
 <script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -193,19 +193,125 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="page-not-found" class="section level1">
-<h1>Page not found</h1>
-<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
-<p>You may want to try searching to find the page's new location, or use
-the table of contents to find the page you are looking for.</p>
+<div id="advanced-multiple-regression" class="section level1" number="3">
+<h1><span class="header-section-number">Week 3</span> Advanced Multiple Regression</h1>
+<p>Mediation and Moderation
+<br>
+Packages Used:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="advanced-multiple-regression.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<p>Importing Data:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="advanced-multiple-regression.html#cb2-1" aria-hidden="true" tabindex="-1"></a>lab3.raw <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_sav</span>(<span class="st">&quot;data/lab3data.sav&quot;</span>)</span>
+<span id="cb2-2"><a href="advanced-multiple-regression.html#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="advanced-multiple-regression.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">view</span>(lab3.raw)</span></code></pre></div>
+<div id="moderation-simple-multiplicative-interaction" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Moderation (Simple Multiplicative Interaction)</h2>
+<p>We will be looking at whether there is an interaction effect between Perceived Support and Conscientiousness on Honours Grade.</p>
+<div id="basic-steps" class="section level3 unnumbered">
+<h3>4 Basic Steps</h3>
+<ol style="list-style-type: decimal">
+<li>Centre the predictors</li>
+<li>Compute the interaction term</li>
+<li>Fit the regression model with and without the interaction using heirarchical regression</li>
+<li>Interpret the interaction with the aid of plots</li>
+</ol>
+<div id="centre-variables" class="section level4 unnumbered">
+<h4>Centre Variables</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="advanced-multiple-regression.html#cb3-1" aria-hidden="true" tabindex="-1"></a>lab3 <span class="ot">&lt;-</span> lab3.raw <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="advanced-multiple-regression.html#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">conscie.cent =</span> conscie <span class="sc">-</span> <span class="fu">mean</span>(conscie),</span>
+<span id="cb3-3"><a href="advanced-multiple-regression.html#cb3-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">psupport.cent =</span> psupport <span class="sc">-</span> <span class="fu">mean</span>(psupport))</span></code></pre></div>
+</div>
+<div id="compute-interaction" class="section level4 unnumbered">
+<h4>Compute Interaction</h4>
+<p>Multiply the two centred variables together.</p>
+<p>Note: You don’t actually need to do this in R, you can just input the interaction term straight into the model and it will do the calculation.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="advanced-multiple-regression.html#cb4-1" aria-hidden="true" tabindex="-1"></a>lab3 <span class="ot">&lt;-</span> lab3 <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="advanced-multiple-regression.html#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">conscie.psupport =</span> conscie.cent <span class="sc">*</span> psupport.cent)</span></code></pre></div>
+</div>
+<div id="heirarchical-regression" class="section level4 unnumbered">
+<h4>Heirarchical Regression</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="advanced-multiple-regression.html#cb5-1" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(honsgrad <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> lab3) <span class="co"># To obtain total Sums of Squares</span></span>
+<span id="cb5-2"><a href="advanced-multiple-regression.html#cb5-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(honsgrad <span class="sc">~</span> conscie.cent <span class="sc">+</span> psupport.cent, <span class="at">data =</span> lab3)</span>
+<span id="cb5-3"><a href="advanced-multiple-regression.html#cb5-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(honsgrad <span class="sc">~</span> conscie.cent<span class="sc">*</span>psupport.cent, <span class="at">data =</span> lab3) </span>
+<span id="cb5-4"><a href="advanced-multiple-regression.html#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># You can also do this: lm(honsgrad ~ conscie.cent + psupport.cent + conscie.cent:psupport.cent, data = lab3)</span></span></code></pre></div>
+</div>
+<div id="interpret-output" class="section level4 unnumbered">
+<h4>Interpret Output</h4>
+<div id="significance-of-change" class="section level5 unnumbered">
+<h5>Significance of change</h5>
+<p>We can calculate whether the model with interaction explains a significant amount more variance than the model without interaction by using <code>anova()</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="advanced-multiple-regression.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1, m2)</span></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: honsgrad ~ conscie.cent + psupport.cent
+## Model 2: honsgrad ~ conscie.cent * psupport.cent
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1     47 1661.3                                  
+## 2     46 1162.2  1    499.07 19.753 5.516e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The above table indicates that there is a significant improvement in the model including interaction: F(1, 46) = 19.753, p &lt; .001.</p>
+<p>We can calculate the change in variance explained by looking at the R2 values of each model.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="advanced-multiple-regression.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = honsgrad ~ conscie.cent + psupport.cent, data = lab3)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -15.249  -4.885   0.861   4.553  11.636 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    78.0600     0.8408  92.842  &lt; 2e-16 ***
+## conscie.cent    1.6862     0.3618   4.660 2.63e-05 ***
+## psupport.cent   1.3839     0.3353   4.127 0.000149 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 5.945 on 47 degrees of freedom
+## Multiple R-squared:  0.489,  Adjusted R-squared:  0.4672 
+## F-statistic: 22.49 on 2 and 47 DF,  p-value: 1.408e-07</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="advanced-multiple-regression.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = honsgrad ~ conscie.cent * psupport.cent, data = lab3)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -11.100  -3.861  -0.154   3.173  12.375 
+## 
+## Coefficients:
+##                            Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                 77.5779     0.7191 107.885  &lt; 2e-16 ***
+## conscie.cent                 1.0031     0.3424   2.930  0.00526 ** 
+## psupport.cent                1.3436     0.2836   4.737 2.11e-05 ***
+## conscie.cent:psupport.cent   0.5834     0.1313   4.444 5.52e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 5.026 on 46 degrees of freedom
+## Multiple R-squared:  0.6425, Adjusted R-squared:  0.6192 
+## F-statistic: 27.56 on 3 and 46 DF,  p-value: 2.37e-10</code></pre>
+<p>The model with interaction has an <span class="math inline">\(R^2\)</span> of .642 and the model without has an <span class="math inline">\(R^2\)</span> of .489.</p>
+<p>The difference (<span class="math inline">\(.642-.489=.153\)</span>) suggests that the model with interaction accounts for 15% more variance over and above the main effects of the model without interaction.</p>
+</div>
+<div id="plotting-interaction" class="section level5 unnumbered">
+<h5>Plotting Interaction</h5>
+<p><a href="https://stats.idre.ucla.edu/r/seminars/interactions-r/" class="uri">https://stats.idre.ucla.edu/r/seminars/interactions-r/</a></p>
+<p>TBC</p>
+
+</div>
+</div>
+</div>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-
+<a href="intro-to-regression.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="wk-4.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

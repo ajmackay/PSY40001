@@ -10,3 +10,5 @@ tab:missing-values
 data-screening
 descriptives
 multiple-regression
+advanced-multiple-regression
+moderation-simple-multiplicative-interaction

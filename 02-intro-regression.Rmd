@@ -5,7 +5,7 @@ library(tidyverse) # For general functions
 library(haven) # For importing SPSS file into R
 ```
 
-Inporting data:
+Importing data:
 ```{r data-import}
 lab2_raw <- read_sav("data/lab2data.sav");
 ```

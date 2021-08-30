@@ -1,1 +1,91 @@
-# Wk 3
+# Advanced Multiple Regression
+Mediation and Moderation
+<br>
+Packages Used:
+```{r packages, message = F}
+library(tidyverse)
+```
+
+
+Importing Data:
+```{r data.import, message=F}
+lab3.raw <- haven::read_sav("data/lab3data.sav")
+
+view(lab3.raw)
+```
+
+## Moderation (Simple Multiplicative Interaction)
+We will be looking at whether there is an interaction effect between Perceived Support and Conscientiousness on Honours Grade.
+
+### 4 Basic Steps {-}
+
+1. Centre the predictors
+2. Compute the interaction term
+3. Fit the regression model with and without the interaction using heirarchical regression
+4. Interpret the interaction with the aid of plots
+
+#### Centre Variables {-}
+```{r centre}
+lab3 <- lab3.raw %>% 
+  mutate(conscie.cent = conscie - mean(conscie),
+         psupport.cent = psupport - mean(psupport))
+```
+
+#### Compute Interaction {-}
+Multiply the two centred variables together.
+
+Note: You don't actually need to do this in R, you can just input the interaction term straight into the model and it will do the calculation.
+
+```{r interaction.compute}
+lab3 <- lab3 %>% 
+  mutate(conscie.psupport = conscie.cent * psupport.cent)
+```
+
+#### Heirarchical Regression {-}
+```{r h.regression}
+m0 <- lm(honsgrad ~ 1, data = lab3) # To obtain total Sums of Squares
+m1 <- lm(honsgrad ~ conscie.cent + psupport.cent, data = lab3)
+m2 <- lm(honsgrad ~ conscie.cent*psupport.cent, data = lab3) 
+# You can also do this: lm(honsgrad ~ conscie.cent + psupport.cent + conscie.cent:psupport.cent, data = lab3)
+```
+
+#### Interpret Output {-}
+##### Significance of change {-}
+We can calculate whether the model with interaction explains a significant amount more variance than the model without interaction by using <code>anova()</code>.
+```{r h.regress.output1}
+anova(m1, m2)
+```
+
+The above table indicates that there is a significant improvement in the model including interaction:  F(1, 46) = 19.753, p < .001.
+
+We can calculate the change in variance explained by looking at the R2 values of each model.
+
+```{r h.regress.output2}
+summary(m1)
+summary(m2)
+```
+
+The model with interaction has an $R^2$ of .642 and the model without has an $R^2$ of .489.  
+
+The difference ($.642-.489=.153$) suggests that the model with interaction accounts for 15% more variance over and above the main effects of the model without interaction.
+
+##### Plotting Interaction {-}
+https://stats.idre.ucla.edu/r/seminars/interactions-r/
+
+TBC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
