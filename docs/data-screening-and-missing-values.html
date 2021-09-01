@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Week 1 Data Screening and Missing Values | PSY40001 SPSS to R notes</title>
   <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Week 1 Data Screening and Missing Values | PSY40001 SPSS to R notes" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Mackay" />
 
 
-<meta name="date" content="2021-03-10" />
+<meta name="date" content="2021-09-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,8 +33,8 @@
   
 <link rel="prev" href="index.html"/>
 <link rel="next" href="intro-to-regression.html"/>
-<script src="libs/header-attrs-2.7/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -51,6 +51,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet" />
 
 
@@ -119,6 +121,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
@@ -152,8 +155,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="data-screening-and-missing-values.html"><a href="data-screening-and-missing-values.html#mMcar"><i class="fa fa-check"></i>Little’s MCAR Test</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="intro-to-regression.html"><a href="intro-to-regression.html"><i class="fa fa-check"></i><b>2</b> Intro to Regression</a></li>
-<li class="chapter" data-level="3" data-path="wk-3.html"><a href="wk-3.html"><i class="fa fa-check"></i><b>3</b> Wk 3</a></li>
+<li class="chapter" data-level="2" data-path="intro-to-regression.html"><a href="intro-to-regression.html"><i class="fa fa-check"></i><b>2</b> Intro to Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro-to-regression.html"><a href="intro-to-regression.html#data-screening"><i class="fa fa-check"></i>Data Screening</a></li>
+<li class="chapter" data-level="2.1" data-path="intro-to-regression.html"><a href="intro-to-regression.html#conducting-a-multiple-regression"><i class="fa fa-check"></i><b>2.1</b> Conducting a Multiple Regression</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="intro-to-regression.html"><a href="intro-to-regression.html#descriptives"><i class="fa fa-check"></i><b>2.1.1</b> Descriptives</a></li>
+<li class="chapter" data-level="2.1.2" data-path="intro-to-regression.html"><a href="intro-to-regression.html#multiple-regression"><i class="fa fa-check"></i><b>2.1.2</b> Multiple Regression</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="advanced-multiple-regression.html"><a href="advanced-multiple-regression.html"><i class="fa fa-check"></i><b>3</b> Advanced Multiple Regression</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="advanced-multiple-regression.html"><a href="advanced-multiple-regression.html#moderation-simple-multiplicative-interaction"><i class="fa fa-check"></i><b>3.1</b> Moderation (Simple Multiplicative Interaction)</a>
+<ul>
+<li class="chapter" data-level="" data-path="advanced-multiple-regression.html"><a href="advanced-multiple-regression.html#basic-steps"><i class="fa fa-check"></i>Basic Steps</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="4" data-path="wk-4.html"><a href="wk-4.html"><i class="fa fa-check"></i><b>4</b> Wk 4</a></li>
 <li class="chapter" data-level="5" data-path="wk-5.html"><a href="wk-5.html"><i class="fa fa-check"></i><b>5</b> Wk 5</a></li>
 <li class="chapter" data-level="6" data-path="wk-6.html"><a href="wk-6.html"><i class="fa fa-check"></i><b>6</b> Wk 6</a></li>
@@ -179,118 +196,482 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="data-screening-and-missing-values" class="section level1" number="1">
 <h1><span class="header-section-number">Week 1</span> Data Screening and Missing Values</h1>
+<p>The packages that we will use for this week’s exercises are as follows:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="data-screening-and-missing-values.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># For general functions</span></span>
+<span id="cb1-2"><a href="data-screening-and-missing-values.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven) <span class="co"># For importing SPSS file into R</span></span>
+<span id="cb1-3"><a href="data-screening-and-missing-values.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar) <span class="co"># Visualising missing data</span></span>
+<span id="cb1-4"><a href="data-screening-and-missing-values.html#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr) <span class="co"># For general tables</span></span></code></pre></div>
 <div id="mPart1" class="section level2 unnumbered">
 <h2>Part 1: Data Exploration</h2>
 <div id="mImport" class="section level3 unnumbered">
 <h3>Importing SPSS file into R</h3>
-<p>The packages that we will use for this week’s exercises are as follows:</p>
 <p>Importing SPSS files into R is easy with the <code>haven</code> package.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="data-screening-and-missing-values.html#cb1-1" aria-hidden="true" tabindex="-1"></a>lab1_raw <span class="ot">&lt;-</span> <span class="fu">read_sav</span>(<span class="st">&quot;data/lab1data.sav&quot;</span>);</span>
-<span id="cb1-2"><a href="data-screening-and-missing-values.html#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="data-screening-and-missing-values.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lab1_raw)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 7
-##   nicname          sex height          border vegitarian prevmark hopemark
-##   &lt;chr&gt;      &lt;dbl+lbl&gt;  &lt;dbl&gt;       &lt;dbl+lbl&gt;  &lt;dbl+lbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1 crit      2 [Female]    150  1 [first born]    1 [no]        85       95
-## 2 slim     NA              NA NA                 2 [yes]       NA       NA
-## 3 kac       2 [Female]    167  1 [first born]    1 [no]        50       55
-## 4 dusty     2 [Female]    145  4                 1 [no]        50       60
-## 5 princess  2 [Female]     NA  1 [first born]    1 [no]        NA       85
-## 6 Bean      1 [Male]      189  3                 1 [no]        80       80</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="data-screening-and-missing-values.html#cb2-1" aria-hidden="true" tabindex="-1"></a>lab1_raw <span class="ot">&lt;-</span> <span class="fu">read_sav</span>(<span class="st">&quot;data/lab1data.sav&quot;</span>);</span>
+<span id="cb2-2"><a href="data-screening-and-missing-values.html#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="data-screening-and-missing-values.html#cb2-3" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb2-4"><a href="data-screening-and-missing-values.html#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(lab1_raw)</span>
+<span id="cb2-5"><a href="data-screening-and-missing-values.html#cb2-5" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">nicname</th>
+<th align="right">sex</th>
+<th align="right">height</th>
+<th align="right">border</th>
+<th align="right">vegitarian</th>
+<th align="right">prevmark</th>
+<th align="right">hopemark</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">crit</td>
+<td align="right">2</td>
+<td align="right">150</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">85</td>
+<td align="right">95</td>
+</tr>
+<tr class="even">
+<td align="left">slim</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">kac</td>
+<td align="right">2</td>
+<td align="right">167</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">55</td>
+</tr>
+<tr class="even">
+<td align="left">dusty</td>
+<td align="right">2</td>
+<td align="right">145</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">60</td>
+</tr>
+<tr class="odd">
+<td align="left">princess</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">85</td>
+</tr>
+<tr class="even">
+<td align="left">Bean</td>
+<td align="right">1</td>
+<td align="right">189</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">80</td>
+<td align="right">80</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="mMissing-Values" class="section level3 unnumbered">
 <h3>Set Up Missing Values</h3>
 <p>R automatically codes missing values with the “NA” symbol. While this can make things easier when running certain analyses, it does restrict us in the sense that we cannot easily define what a specific missing value represents (for example, we are unable to distinguish a missing value that is due to a participant refusing to answer the question with a missing value that was due to the researcher forgetting to ask).</p>
 <p>We can, however easily see how many missing values there are for each variable in our dataset:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="data-screening-and-missing-values.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lab1_raw);</span></code></pre></div>
-<pre><code>##    nicname               sex            height          border      
-##  Length:41          Min.   :1.000   Min.   :145.0   Min.   : 1.000  
-##  Class :character   1st Qu.:1.000   1st Qu.:155.2   1st Qu.: 1.000  
-##  Mode  :character   Median :2.000   Median :166.0   Median : 2.000  
-##                     Mean   :1.615   Mean   :166.3   Mean   : 2.361  
-##                     3rd Qu.:2.000   3rd Qu.:178.0   3rd Qu.: 3.000  
-##                     Max.   :2.000   Max.   :198.0   Max.   :10.000  
-##                     NA&#39;s   :2       NA&#39;s   :7       NA&#39;s   :5       
-##    vegitarian      prevmark        hopemark    
-##  Min.   :1.00   Min.   :45.00   Min.   :40.00  
-##  1st Qu.:1.00   1st Qu.:63.50   1st Qu.:75.00  
-##  Median :1.00   Median :69.00   Median :80.00  
-##  Mean   :1.15   Mean   :69.34   Mean   :78.23  
-##  3rd Qu.:1.00   3rd Qu.:79.00   3rd Qu.:85.00  
-##  Max.   :2.00   Max.   :89.00   Max.   :99.00  
-##  NA&#39;s   :1      NA&#39;s   :6       NA&#39;s   :2</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="data-screening-and-missing-values.html#cb3-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb3-2"><a href="data-screening-and-missing-values.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lab1_raw),</span>
+<span id="cb3-3"><a href="data-screening-and-missing-values.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">caption =</span> <span class="st">&quot;Summary of Raw Data&quot;</span></span>
+<span id="cb3-4"><a href="data-screening-and-missing-values.html#cb3-4" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
+<table>
+<caption><span id="tab:missing-values">Table 1.1: </span>Summary of Raw Data</caption>
+<colgroup>
+<col width="2%" />
+<col width="16%" />
+<col width="13%" />
+<col width="13%" />
+<col width="14%" />
+<col width="12%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">nicname</th>
+<th align="left">sex</th>
+<th align="left">height</th>
+<th align="left">border</th>
+<th align="left">vegitarian</th>
+<th align="left">prevmark</th>
+<th align="left">hopemark</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Length:41</td>
+<td align="left">Min. :1.000</td>
+<td align="left">Min. :145.0</td>
+<td align="left">Min. : 1.000</td>
+<td align="left">Min. :1.00</td>
+<td align="left">Min. :45.00</td>
+<td align="left">Min. :40.00</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Class :character</td>
+<td align="left">1st Qu.:1.000</td>
+<td align="left">1st Qu.:155.2</td>
+<td align="left">1st Qu.: 1.000</td>
+<td align="left">1st Qu.:1.00</td>
+<td align="left">1st Qu.:63.50</td>
+<td align="left">1st Qu.:75.00</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Mode :character</td>
+<td align="left">Median :2.000</td>
+<td align="left">Median :166.0</td>
+<td align="left">Median : 2.000</td>
+<td align="left">Median :1.00</td>
+<td align="left">Median :69.00</td>
+<td align="left">Median :80.00</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">Mean :1.615</td>
+<td align="left">Mean :166.3</td>
+<td align="left">Mean : 2.361</td>
+<td align="left">Mean :1.15</td>
+<td align="left">Mean :69.34</td>
+<td align="left">Mean :78.23</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">3rd Qu.:2.000</td>
+<td align="left">3rd Qu.:178.0</td>
+<td align="left">3rd Qu.: 3.000</td>
+<td align="left">3rd Qu.:1.00</td>
+<td align="left">3rd Qu.:79.00</td>
+<td align="left">3rd Qu.:85.00</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">Max. :2.000</td>
+<td align="left">Max. :198.0</td>
+<td align="left">Max. :10.000</td>
+<td align="left">Max. :2.00</td>
+<td align="left">Max. :89.00</td>
+<td align="left">Max. :99.00</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">NA’s :2</td>
+<td align="left">NA’s :7</td>
+<td align="left">NA’s :5</td>
+<td align="left">NA’s :1</td>
+<td align="left">NA’s :6</td>
+<td align="left">NA’s :2</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="mModify" class="section level3 unnumbered">
 <h3>Modyfing the data</h3>
 <div id="mNew-variable" class="section level4 unnumbered">
 <h4>Insert new Variable</h4>
 <p>To create new variables inside a dataframe in R, we can use the <code>mutate</code> function.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="data-screening-and-missing-values.html#cb5-1" aria-hidden="true" tabindex="-1"></a>lab1_mod <span class="ot">&lt;-</span> lab1_raw <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="data-screening-and-missing-values.html#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dog =</span> <span class="cn">NA</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="data-screening-and-missing-values.html#cb4-1" aria-hidden="true" tabindex="-1"></a>lab1_mod <span class="ot">&lt;-</span> lab1_raw <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="data-screening-and-missing-values.html#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dog =</span> <span class="cn">NA</span>);</span></code></pre></div>
 <p>And if we want to rearrange our variables so that “dog” is next to “nicname” we can do so by specifying the order of the index.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="data-screening-and-missing-values.html#cb6-1" aria-hidden="true" tabindex="-1"></a>lab1_mod <span class="ot">&lt;-</span> lab1_mod[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">8</span>,<span class="dv">2</span><span class="sc">:</span><span class="dv">7</span>)]</span>
-<span id="cb6-2"><a href="data-screening-and-missing-values.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lab1_mod);</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 8
-##   nicname  dog          sex height      border vegitarian prevmark hopemark
-##   &lt;chr&gt;    &lt;lgl&gt;  &lt;dbl+lbl&gt;  &lt;dbl&gt;   &lt;dbl+lbl&gt;  &lt;dbl+lbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1 crit     NA     2 [Femal~    150  1 [first ~    1 [no]        85       95
-## 2 slim     NA    NA             NA NA             2 [yes]       NA       NA
-## 3 kac      NA     2 [Femal~    167  1 [first ~    1 [no]        50       55
-## 4 dusty    NA     2 [Femal~    145  4             1 [no]        50       60
-## 5 princess NA     2 [Femal~     NA  1 [first ~    1 [no]        NA       85
-## 6 Bean     NA     1 [Male]     189  3             1 [no]        80       80</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="data-screening-and-missing-values.html#cb5-1" aria-hidden="true" tabindex="-1"></a>lab1_mod <span class="ot">&lt;-</span> lab1_mod[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">8</span>,<span class="dv">2</span><span class="sc">:</span><span class="dv">7</span>)]</span>
+<span id="cb5-2"><a href="data-screening-and-missing-values.html#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="data-screening-and-missing-values.html#cb5-3" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb5-4"><a href="data-screening-and-missing-values.html#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(lab1_mod)</span>
+<span id="cb5-5"><a href="data-screening-and-missing-values.html#cb5-5" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">nicname</th>
+<th align="left">dog</th>
+<th align="right">sex</th>
+<th align="right">height</th>
+<th align="right">border</th>
+<th align="right">vegitarian</th>
+<th align="right">prevmark</th>
+<th align="right">hopemark</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">crit</td>
+<td align="left">NA</td>
+<td align="right">2</td>
+<td align="right">150</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">85</td>
+<td align="right">95</td>
+</tr>
+<tr class="even">
+<td align="left">slim</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">kac</td>
+<td align="left">NA</td>
+<td align="right">2</td>
+<td align="right">167</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">55</td>
+</tr>
+<tr class="even">
+<td align="left">dusty</td>
+<td align="left">NA</td>
+<td align="right">2</td>
+<td align="right">145</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">60</td>
+</tr>
+<tr class="odd">
+<td align="left">princess</td>
+<td align="left">NA</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">85</td>
+</tr>
+<tr class="even">
+<td align="left">Bean</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+<td align="right">189</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">80</td>
+<td align="right">80</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="mInputting" class="section level4 unnumbered">
 <h4>Inputting Data</h4>
 <p>Inputting data manually is not as intuitive in R as it is in SPSS as you cannot just click and edit specific entries. While this may seem cumbersome at first, it does ensure that you cannot accidentally delete or edit entries and any editting that is performed is documented (as long as you are saving the syntax).</p>
 <p>In this case, we just need a random assortment of “True” and “False” for our dog variable. This can be achieved with the “sample” function.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="data-screening-and-missing-values.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb8-2"><a href="data-screening-and-missing-values.html#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="data-screening-and-missing-values.html#cb8-3" aria-hidden="true" tabindex="-1"></a>lab1_mod<span class="sc">$</span>dog <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;True&quot;</span>, <span class="st">&quot;False&quot;</span>), <span class="dv">41</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>));</span>
-<span id="cb8-4"><a href="data-screening-and-missing-values.html#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="data-screening-and-missing-values.html#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lab1_mod)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 8
-##   nicname  dog          sex height      border vegitarian prevmark hopemark
-##   &lt;chr&gt;    &lt;chr&gt;  &lt;dbl+lbl&gt;  &lt;dbl&gt;   &lt;dbl+lbl&gt;  &lt;dbl+lbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1 crit     True   2 [Femal~    150  1 [first ~    1 [no]        85       95
-## 2 slim     False NA             NA NA             2 [yes]       NA       NA
-## 3 kac      True   2 [Femal~    167  1 [first ~    1 [no]        50       55
-## 4 dusty    True   2 [Femal~    145  4             1 [no]        50       60
-## 5 princess False  2 [Femal~     NA  1 [first ~    1 [no]        NA       85
-## 6 Bean     True   1 [Male]     189  3             1 [no]        80       80</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="data-screening-and-missing-values.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb6-2"><a href="data-screening-and-missing-values.html#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="data-screening-and-missing-values.html#cb6-3" aria-hidden="true" tabindex="-1"></a>lab1_mod<span class="sc">$</span>dog <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;True&quot;</span>, <span class="st">&quot;False&quot;</span>), <span class="dv">41</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>));</span>
+<span id="cb6-4"><a href="data-screening-and-missing-values.html#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="data-screening-and-missing-values.html#cb6-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb6-6"><a href="data-screening-and-missing-values.html#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(lab1_mod)</span>
+<span id="cb6-7"><a href="data-screening-and-missing-values.html#cb6-7" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">nicname</th>
+<th align="left">dog</th>
+<th align="right">sex</th>
+<th align="right">height</th>
+<th align="right">border</th>
+<th align="right">vegitarian</th>
+<th align="right">prevmark</th>
+<th align="right">hopemark</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">crit</td>
+<td align="left">True</td>
+<td align="right">2</td>
+<td align="right">150</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">85</td>
+<td align="right">95</td>
+</tr>
+<tr class="even">
+<td align="left">slim</td>
+<td align="left">False</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">kac</td>
+<td align="left">True</td>
+<td align="right">2</td>
+<td align="right">167</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">55</td>
+</tr>
+<tr class="even">
+<td align="left">dusty</td>
+<td align="left">True</td>
+<td align="right">2</td>
+<td align="right">145</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">60</td>
+</tr>
+<tr class="odd">
+<td align="left">princess</td>
+<td align="left">False</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">85</td>
+</tr>
+<tr class="even">
+<td align="left">Bean</td>
+<td align="left">True</td>
+<td align="right">1</td>
+<td align="right">189</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">80</td>
+<td align="right">80</td>
+</tr>
+</tbody>
+</table>
 <p>And if we want to edit a specific entry, we can do so by specifying the corresponding index.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="data-screening-and-missing-values.html#cb10-1" aria-hidden="true" tabindex="-1"></a>lab1_mod<span class="sc">$</span>dog[<span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="st">&quot;FALSE&quot;</span></span>
-<span id="cb10-2"><a href="data-screening-and-missing-values.html#cb10-2" aria-hidden="true" tabindex="-1"></a>lab1_mod<span class="sc">$</span>dog[<span class="dv">3</span>];</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="data-screening-and-missing-values.html#cb7-1" aria-hidden="true" tabindex="-1"></a>lab1_mod<span class="sc">$</span>dog[<span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="st">&quot;FALSE&quot;</span></span>
+<span id="cb7-2"><a href="data-screening-and-missing-values.html#cb7-2" aria-hidden="true" tabindex="-1"></a>lab1_mod<span class="sc">$</span>dog[<span class="dv">3</span>];</span></code></pre></div>
 <pre><code>## [1] &quot;FALSE&quot;</code></pre>
 <p>Or you can use the “which” function to return the index.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="data-screening-and-missing-values.html#cb12-1" aria-hidden="true" tabindex="-1"></a>lab1_mod<span class="sc">$</span>nicname[<span class="fu">which</span>(lab1_mod<span class="sc">$</span>nicname <span class="sc">==</span> <span class="st">&quot;dusty&quot;</span>)] <span class="ot">&lt;-</span> <span class="st">&quot;doodles&quot;</span></span>
-<span id="cb12-2"><a href="data-screening-and-missing-values.html#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="data-screening-and-missing-values.html#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lab1_mod<span class="sc">$</span>nicname)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="data-screening-and-missing-values.html#cb9-1" aria-hidden="true" tabindex="-1"></a>lab1_mod<span class="sc">$</span>nicname[<span class="fu">which</span>(lab1_mod<span class="sc">$</span>nicname <span class="sc">==</span> <span class="st">&quot;dusty&quot;</span>)] <span class="ot">&lt;-</span> <span class="st">&quot;doodles&quot;</span></span>
+<span id="cb9-2"><a href="data-screening-and-missing-values.html#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="data-screening-and-missing-values.html#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lab1_mod<span class="sc">$</span>nicname)</span></code></pre></div>
 <pre><code>## [1] &quot;crit&quot;     &quot;slim&quot;     &quot;kac&quot;      &quot;doodles&quot;  &quot;princess&quot; &quot;Bean&quot;</code></pre>
 </div>
 <div id="mCompute-new" class="section level4 unnumbered">
 <h4>Compute new Variable</h4>
 <p>The “mutate” function makes it easy to create new variables from existing variables.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="data-screening-and-missing-values.html#cb14-1" aria-hidden="true" tabindex="-1"></a>lab1_mod <span class="ot">&lt;-</span> lab1_mod <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="data-screening-and-missing-values.html#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diffmark =</span> prevmark <span class="sc">-</span> hopemark);</span>
-<span id="cb14-3"><a href="data-screening-and-missing-values.html#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="data-screening-and-missing-values.html#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lab1_mod)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 9
-##   nicname dog        sex height   border vegitarian prevmark hopemark
-##   &lt;chr&gt;   &lt;chr&gt; &lt;dbl+lb&gt;  &lt;dbl&gt; &lt;dbl+lb&gt;  &lt;dbl+lbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1 crit    True   2 [Fem~    150  1 [fir~    1 [no]        85       95
-## 2 slim    False NA           NA NA          2 [yes]       NA       NA
-## 3 kac     FALSE  2 [Fem~    167  1 [fir~    1 [no]        50       55
-## 4 doodles True   2 [Fem~    145  4          1 [no]        50       60
-## 5 prince~ False  2 [Fem~     NA  1 [fir~    1 [no]        NA       85
-## 6 Bean    True   1 [Mal~    189  3          1 [no]        80       80
-## # ... with 1 more variable: diffmark &lt;dbl&gt;</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="data-screening-and-missing-values.html#cb11-1" aria-hidden="true" tabindex="-1"></a>lab1_mod <span class="ot">&lt;-</span> lab1_mod <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="data-screening-and-missing-values.html#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diffmark =</span> prevmark <span class="sc">-</span> hopemark);</span>
+<span id="cb11-3"><a href="data-screening-and-missing-values.html#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="data-screening-and-missing-values.html#cb11-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb11-5"><a href="data-screening-and-missing-values.html#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(lab1_mod)</span>
+<span id="cb11-6"><a href="data-screening-and-missing-values.html#cb11-6" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">nicname</th>
+<th align="left">dog</th>
+<th align="right">sex</th>
+<th align="right">height</th>
+<th align="right">border</th>
+<th align="right">vegitarian</th>
+<th align="right">prevmark</th>
+<th align="right">hopemark</th>
+<th align="right">diffmark</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">crit</td>
+<td align="left">True</td>
+<td align="right">2</td>
+<td align="right">150</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">85</td>
+<td align="right">95</td>
+<td align="right">-10</td>
+</tr>
+<tr class="even">
+<td align="left">slim</td>
+<td align="left">False</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">kac</td>
+<td align="left">FALSE</td>
+<td align="right">2</td>
+<td align="right">167</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">55</td>
+<td align="right">-5</td>
+</tr>
+<tr class="even">
+<td align="left">doodles</td>
+<td align="left">True</td>
+<td align="right">2</td>
+<td align="right">145</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">60</td>
+<td align="right">-10</td>
+</tr>
+<tr class="odd">
+<td align="left">princess</td>
+<td align="left">False</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">85</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Bean</td>
+<td align="left">True</td>
+<td align="right">1</td>
+<td align="right">189</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">80</td>
+<td align="right">80</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="mEdit-Name" class="section level4 unnumbered">
 <h4>Edit Variable name*</h4>
 <p>**This was not part of the week 1 lab, but the variable name “vegitarian” could use a little correcting!*</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="data-screening-and-missing-values.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lab1_mod)[<span class="fu">colnames</span>(lab1_mod) <span class="sc">==</span> <span class="st">&quot;vegitarian&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;vegetarian&quot;</span></span>
-<span id="cb16-2"><a href="data-screening-and-missing-values.html#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lab1_mod)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="data-screening-and-missing-values.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lab1_mod)[<span class="fu">colnames</span>(lab1_mod) <span class="sc">==</span> <span class="st">&quot;vegitarian&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;vegetarian&quot;</span></span>
+<span id="cb12-2"><a href="data-screening-and-missing-values.html#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lab1_mod)</span></code></pre></div>
 <pre><code>## [1] &quot;nicname&quot;    &quot;dog&quot;        &quot;sex&quot;        &quot;height&quot;     &quot;border&quot;    
 ## [6] &quot;vegetarian&quot; &quot;prevmark&quot;   &quot;hopemark&quot;   &quot;diffmark&quot;</code></pre>
 </div>
@@ -301,7 +682,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="mUnivariate" class="section level3 unnumbered">
 <h3>Univariate Statistics</h3>
 <p>The <code>table1</code> package allows us to quickly and easily see the number of missing values and their respective proportions.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="data-screening-and-missing-values.html#cb18-1" aria-hidden="true" tabindex="-1"></a>table1<span class="sc">::</span><span class="fu">table1</span>(<span class="sc">~</span>height <span class="sc">+</span> prevmark <span class="sc">+</span> hopemark <span class="sc">+</span> border <span class="sc">+</span> sex <span class="sc">+</span> vegetarian, <span class="at">data =</span> lab1_mod);</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="data-screening-and-missing-values.html#cb14-1" aria-hidden="true" tabindex="-1"></a>table1<span class="sc">::</span><span class="fu">table1</span>(<span class="sc">~</span>height <span class="sc">+</span> prevmark <span class="sc">+</span> hopemark <span class="sc">+</span> border <span class="sc">+</span> sex <span class="sc">+</span> vegetarian, <span class="at">data =</span> lab1_mod);</span></code></pre></div>
 <div class="Rtable1"><table class="Rtable1">
 <thead>
 <tr>
@@ -311,7 +692,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </thead>
 <tbody>
 <tr>
-<td class='rowlabel firstrow'><span class='varlabel'>height in centermeters</span></td>
+<td class='rowlabel firstrow'>height in centermeters</td>
 <td class='firstrow'></td>
 </tr>
 <tr>
@@ -327,7 +708,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td class='lastrow'>7 (17.1%)</td>
 </tr>
 <tr>
-<td class='rowlabel firstrow'><span class='varlabel'>What is your average previous mark in stats?</span></td>
+<td class='rowlabel firstrow'>What is your average previous mark in stats?</td>
 <td class='firstrow'></td>
 </tr>
 <tr>
@@ -343,7 +724,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td class='lastrow'>6 (14.6%)</td>
 </tr>
 <tr>
-<td class='rowlabel firstrow'><span class='varlabel'>What is your hoped for mark in this subject?</span></td>
+<td class='rowlabel firstrow'>What is your hoped for mark in this subject?</td>
 <td class='firstrow'></td>
 </tr>
 <tr>
@@ -359,7 +740,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td class='lastrow'>2 (4.9%)</td>
 </tr>
 <tr>
-<td class='rowlabel firstrow'><span class='varlabel'>birth order</span></td>
+<td class='rowlabel firstrow'>birth order</td>
 <td class='firstrow'></td>
 </tr>
 <tr>
@@ -375,7 +756,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td class='lastrow'>5 (12.2%)</td>
 </tr>
 <tr>
-<td class='rowlabel firstrow'><span class='varlabel'>Gender</span></td>
+<td class='rowlabel firstrow'>Gender</td>
 <td class='firstrow'></td>
 </tr>
 <tr>
@@ -391,7 +772,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td class='lastrow'>2 (4.9%)</td>
 </tr>
 <tr>
-<td class='rowlabel firstrow'><span class='varlabel'>Are you a vegetarian</span></td>
+<td class='rowlabel firstrow'>Are you a vegetarian</td>
 <td class='firstrow'></td>
 </tr>
 <tr>
@@ -417,26 +798,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="mTabulated-Patterns" class="section level3 unnumbered">
 <h3>Missing and Tabulated Patterns</h3>
 <p>The <code>naniar</code> package provides easy to use tools to visualise the pattern of missing data in a similar way to the “Tabulated Patterns” table in SPSS.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="data-screening-and-missing-values.html#cb19-1" aria-hidden="true" tabindex="-1"></a>lab1_mod <span class="sc">%&gt;%</span></span>
-<span id="cb19-2"><a href="data-screening-and-missing-values.html#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(height, prevmark, hopemark, border, sex, vegetarian) <span class="sc">%&gt;%</span></span>
-<span id="cb19-3"><a href="data-screening-and-missing-values.html#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vis_miss</span>();</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="data-screening-and-missing-values.html#cb15-1" aria-hidden="true" tabindex="-1"></a>lab1_mod <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="data-screening-and-missing-values.html#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(height, prevmark, hopemark, border, sex, vegetarian) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="data-screening-and-missing-values.html#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vis_miss</span>();</span></code></pre></div>
 <p><img src="PSY40001_files/figure-html/naniar-1.png" width="672" /></p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="data-screening-and-missing-values.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_miss_upset</span>(lab1_mod)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="data-screening-and-missing-values.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_miss_upset</span>(lab1_mod)</span></code></pre></div>
 <p><img src="PSY40001_files/figure-html/naniar-2.png" width="672" /></p>
 </div>
 <div id="mMcar" class="section level3 unnumbered">
 <h3>Little’s MCAR Test</h3>
 <p>Unfortunately again I was not able to find much in regards to a simple way to perform Little’s MCAR test on the missing data. The closest that I got was to <a href = https://github.com/rcst/little-test.git> this person’s github</a> who has created a function to perform the test. I have used it below and as you can see it returns similar (but not the same) results as the test in SPSS, however I cannot vouch for the mathematical reliability of the function.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="data-screening-and-missing-values.html#cb21-1" aria-hidden="true" tabindex="-1"></a>lab1_mcar <span class="ot">&lt;-</span> lab1_mod <span class="sc">%&gt;%</span></span>
-<span id="cb21-2"><a href="data-screening-and-missing-values.html#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(height, prevmark, hopemark, border);</span>
-<span id="cb21-3"><a href="data-screening-and-missing-values.html#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="data-screening-and-missing-values.html#cb21-4" aria-hidden="true" tabindex="-1"></a>lab1_mcar <span class="ot">&lt;-</span> <span class="fu">mcar</span>(lab1_mcar);</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="data-screening-and-missing-values.html#cb17-1" aria-hidden="true" tabindex="-1"></a>lab1_mcar <span class="ot">&lt;-</span> lab1_mod <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="data-screening-and-missing-values.html#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(height, prevmark, hopemark, border);</span>
+<span id="cb17-3"><a href="data-screening-and-missing-values.html#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="data-screening-and-missing-values.html#cb17-4" aria-hidden="true" tabindex="-1"></a>lab1_mcar <span class="ot">&lt;-</span> <span class="fu">mcar</span>(lab1_mcar);</span></code></pre></div>
 <pre><code>## Iterations of EM: 
 ## 1...2...3...4...5...6...7...8...9...10...11...12...13...14...15...16...17...18...19...20...21...
 ## this could take a while</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="data-screening-and-missing-values.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">chi_square =</span> lab1_mcar[[<span class="st">&quot;chi.square&quot;</span>]],</span>
-<span id="cb23-2"><a href="data-screening-and-missing-values.html#cb23-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">df =</span> lab1_mcar[[<span class="st">&quot;df&quot;</span>]],</span>
-<span id="cb23-3"><a href="data-screening-and-missing-values.html#cb23-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">p_value =</span> lab1_mcar[[<span class="st">&quot;p.value&quot;</span>]]);</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="data-screening-and-missing-values.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">chi_square =</span> lab1_mcar[[<span class="st">&quot;chi.square&quot;</span>]],</span>
+<span id="cb19-2"><a href="data-screening-and-missing-values.html#cb19-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">df =</span> lab1_mcar[[<span class="st">&quot;df&quot;</span>]],</span>
+<span id="cb19-3"><a href="data-screening-and-missing-values.html#cb19-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">p_value =</span> lab1_mcar[[<span class="st">&quot;p.value&quot;</span>]]);</span></code></pre></div>
 <pre><code>##   chi_square df   p_value
 ## 1   19.41084 14 0.1498372</code></pre>
 
@@ -472,6 +853,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -492,6 +874,10 @@ gitbook.start({
 "text": null
 },
 "download": ["PSY40001.pdf", "PSY40001.epub"],
+"search": {
+"engine": "lunr",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -499,6 +885,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
