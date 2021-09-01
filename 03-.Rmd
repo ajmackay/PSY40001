@@ -17,7 +17,7 @@ view(lab3.raw)
 ## Moderation (Simple Multiplicative Interaction)
 We will be looking at whether there is an interaction effect between Perceived Support and Conscientiousness on Honours Grade.
 
-### 4 Basic Steps {-}
+### Basic Steps {-}
 
 1. Centre the predictors
 2. Compute the interaction term
