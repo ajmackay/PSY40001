@@ -53,7 +53,6 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet" />
 
 
 <style type="text/css">
@@ -199,14 +198,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Mediation and Moderation
 <br>
 Packages Used:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="advanced-multiple-regression.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="advanced-multiple-regression.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="advanced-multiple-regression.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span></code></pre></div>
 <p>Importing Data:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="advanced-multiple-regression.html#cb31-1" aria-hidden="true" tabindex="-1"></a>lab3.raw <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_sav</span>(<span class="st">&quot;data/lab3data.sav&quot;</span>)</span>
-<span id="cb31-2"><a href="advanced-multiple-regression.html#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-3"><a href="advanced-multiple-regression.html#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">view</span>(lab3.raw)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="advanced-multiple-regression.html#cb2-1" aria-hidden="true" tabindex="-1"></a>lab3.raw <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_sav</span>(<span class="st">&quot;data/lab3data.sav&quot;</span>)</span></code></pre></div>
 <div id="moderation-simple-multiplicative-interaction" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> Moderation (Simple Multiplicative Interaction)</h2>
-<p>We will be looking at whether there is an interaction effect between Perceived Support and Conscientiousness on Honours Grade.</p>
+<p>We will be looking at whether there is an interaction effect between Perceived Support and Conscientiousness on Honours Grade (with p.support being the predictor <em>x</em> and conscie being the moderator <em>y</em>).</p>
+<p>Most of the information used for this chapter was found <a href = https://stats.idre.ucla.edu/r/seminars/interactions-r/> here </a></p>
 <div id="basic-steps" class="section level3 unnumbered">
 <h3>Basic Steps</h3>
 <ol style="list-style-type: decimal">
@@ -217,30 +216,30 @@ Packages Used:</p>
 </ol>
 <div id="centre-variables" class="section level4 unnumbered">
 <h4>Centre Variables</h4>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="advanced-multiple-regression.html#cb32-1" aria-hidden="true" tabindex="-1"></a>lab3 <span class="ot">&lt;-</span> lab3.raw <span class="sc">%&gt;%</span> </span>
-<span id="cb32-2"><a href="advanced-multiple-regression.html#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">conscie.cent =</span> conscie <span class="sc">-</span> <span class="fu">mean</span>(conscie),</span>
-<span id="cb32-3"><a href="advanced-multiple-regression.html#cb32-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">psupport.cent =</span> psupport <span class="sc">-</span> <span class="fu">mean</span>(psupport))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="advanced-multiple-regression.html#cb3-1" aria-hidden="true" tabindex="-1"></a>lab3 <span class="ot">&lt;-</span> lab3.raw <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="advanced-multiple-regression.html#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">conscie.cent =</span> conscie <span class="sc">-</span> <span class="fu">mean</span>(conscie),</span>
+<span id="cb3-3"><a href="advanced-multiple-regression.html#cb3-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">psupport.cent =</span> psupport <span class="sc">-</span> <span class="fu">mean</span>(psupport))</span></code></pre></div>
 </div>
 <div id="compute-interaction" class="section level4 unnumbered">
 <h4>Compute Interaction</h4>
 <p>Multiply the two centred variables together.</p>
 <p>Note: You don’t actually need to do this in R, you can just input the interaction term straight into the model and it will do the calculation.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="advanced-multiple-regression.html#cb33-1" aria-hidden="true" tabindex="-1"></a>lab3 <span class="ot">&lt;-</span> lab3 <span class="sc">%&gt;%</span> </span>
-<span id="cb33-2"><a href="advanced-multiple-regression.html#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">conscie.psupport =</span> conscie.cent <span class="sc">*</span> psupport.cent)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="advanced-multiple-regression.html#cb4-1" aria-hidden="true" tabindex="-1"></a>lab3 <span class="ot">&lt;-</span> lab3 <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="advanced-multiple-regression.html#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">conscie.psupport =</span> conscie.cent <span class="sc">*</span> psupport.cent)</span></code></pre></div>
 </div>
 <div id="heirarchical-regression" class="section level4 unnumbered">
 <h4>Heirarchical Regression</h4>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="advanced-multiple-regression.html#cb34-1" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(honsgrad <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> lab3) <span class="co"># To obtain total Sums of Squares</span></span>
-<span id="cb34-2"><a href="advanced-multiple-regression.html#cb34-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(honsgrad <span class="sc">~</span> conscie.cent <span class="sc">+</span> psupport.cent, <span class="at">data =</span> lab3)</span>
-<span id="cb34-3"><a href="advanced-multiple-regression.html#cb34-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(honsgrad <span class="sc">~</span> conscie.cent<span class="sc">*</span>psupport.cent, <span class="at">data =</span> lab3) </span>
-<span id="cb34-4"><a href="advanced-multiple-regression.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># You can also do this: lm(honsgrad ~ conscie.cent + psupport.cent + conscie.cent:psupport.cent, data = lab3)</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="advanced-multiple-regression.html#cb5-1" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(honsgrad <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> lab3) <span class="co"># To obtain total Sums of Squares</span></span>
+<span id="cb5-2"><a href="advanced-multiple-regression.html#cb5-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(honsgrad <span class="sc">~</span> conscie.cent <span class="sc">+</span> psupport.cent, <span class="at">data =</span> lab3)</span>
+<span id="cb5-3"><a href="advanced-multiple-regression.html#cb5-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(honsgrad <span class="sc">~</span> conscie.cent<span class="sc">*</span>psupport.cent, <span class="at">data =</span> lab3) </span>
+<span id="cb5-4"><a href="advanced-multiple-regression.html#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># You can also do this: lm(honsgrad ~ conscie.cent + psupport.cent + conscie.cent:psupport.cent, data = lab3)</span></span></code></pre></div>
 </div>
 <div id="interpret-output" class="section level4 unnumbered">
 <h4>Interpret Output</h4>
 <div id="significance-of-change" class="section level5 unnumbered">
 <h5>Significance of change</h5>
 <p>We can calculate whether the model with interaction explains a significant amount more variance than the model without interaction by using <code>anova()</code>.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="advanced-multiple-regression.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1, m2)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="advanced-multiple-regression.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1, m2)</span></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Model 1: honsgrad ~ conscie.cent + psupport.cent
@@ -252,7 +251,7 @@ Packages Used:</p>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>The above table indicates that there is a significant improvement in the model including interaction: F(1, 46) = 19.753, p &lt; .001.</p>
 <p>We can calculate the change in variance explained by looking at the R2 values of each model.</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="advanced-multiple-regression.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="advanced-multiple-regression.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = honsgrad ~ conscie.cent + psupport.cent, data = lab3)
@@ -272,7 +271,7 @@ Packages Used:</p>
 ## Residual standard error: 5.945 on 47 degrees of freedom
 ## Multiple R-squared:  0.489,  Adjusted R-squared:  0.4672 
 ## F-statistic: 22.49 on 2 and 47 DF,  p-value: 1.408e-07</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="advanced-multiple-regression.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="advanced-multiple-regression.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = honsgrad ~ conscie.cent * psupport.cent, data = lab3)
@@ -298,8 +297,24 @@ Packages Used:</p>
 </div>
 <div id="plotting-interaction" class="section level5 unnumbered">
 <h5>Plotting Interaction</h5>
-<p><a href="https://stats.idre.ucla.edu/r/seminars/interactions-r/" class="uri">https://stats.idre.ucla.edu/r/seminars/interactions-r/</a></p>
-<p>TBC</p>
+<p>There are a few ways to plot a continuous x with a continuous moderator (z). One of the most popular is <em>spotlight analysis</em> which was put forward by Leona Aiken and Stephen West.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="advanced-multiple-regression.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lab3)</span></code></pre></div>
+<pre><code>## [1] &quot;id&quot;               &quot;conscie&quot;          &quot;psupport&quot;         &quot;honsgrad&quot;        
+## [5] &quot;acadsef&quot;          &quot;conscie.cent&quot;     &quot;psupport.cent&quot;    &quot;conscie.psupport&quot;</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="advanced-multiple-regression.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating 3 levels of consci (mean, sd-1, sd+1)</span></span>
+<span id="cb14-2"><a href="advanced-multiple-regression.html#cb14-2" aria-hidden="true" tabindex="-1"></a>consa <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">mean</span>(lab3<span class="sc">$</span>conscie) <span class="sc">+</span> <span class="fu">sd</span>(lab3<span class="sc">$</span>conscie), <span class="dv">1</span>)</span>
+<span id="cb14-3"><a href="advanced-multiple-regression.html#cb14-3" aria-hidden="true" tabindex="-1"></a>cons <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">mean</span>(lab3<span class="sc">$</span>conscie), <span class="dv">1</span>)</span>
+<span id="cb14-4"><a href="advanced-multiple-regression.html#cb14-4" aria-hidden="true" tabindex="-1"></a>consb <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">mean</span>(lab3<span class="sc">$</span>conscie) <span class="sc">-</span> <span class="fu">sd</span>(lab3<span class="sc">$</span>conscie), <span class="dv">1</span>)</span>
+<span id="cb14-5"><a href="advanced-multiple-regression.html#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="advanced-multiple-regression.html#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb14-7"><a href="advanced-multiple-regression.html#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Low =</span> consb,</span>
+<span id="cb14-8"><a href="advanced-multiple-regression.html#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Average =</span> cons,</span>
+<span id="cb14-9"><a href="advanced-multiple-regression.html#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">High =</span> consa</span>
+<span id="cb14-10"><a href="advanced-multiple-regression.html#cb14-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 1 x 3
+##     Low Average  High
+##   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1  12.5    14.9  17.3</code></pre>
 
 </div>
 </div>

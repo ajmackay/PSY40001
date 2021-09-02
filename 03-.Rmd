@@ -4,18 +4,19 @@ Mediation and Moderation
 Packages Used:
 ```{r packages, message = F}
 library(tidyverse)
+library(emmeans)
 ```
 
 
 Importing Data:
 ```{r data.import, message=F}
 lab3.raw <- haven::read_sav("data/lab3data.sav")
-
-view(lab3.raw)
 ```
 
 ## Moderation (Simple Multiplicative Interaction)
-We will be looking at whether there is an interaction effect between Perceived Support and Conscientiousness on Honours Grade.
+We will be looking at whether there is an interaction effect between Perceived Support and Conscientiousness on Honours Grade (with p.support being the predictor *x* and conscie being the moderator *y*).
+
+Most of the information used for this chapter was found <a href = https://stats.idre.ucla.edu/r/seminars/interactions-r/> here </a> 
 
 ### Basic Steps {-}
 
@@ -45,7 +46,7 @@ lab3 <- lab3 %>%
 ```{r h.regression}
 m0 <- lm(honsgrad ~ 1, data = lab3) # To obtain total Sums of Squares
 m1 <- lm(honsgrad ~ conscie.cent + psupport.cent, data = lab3)
-m2 <- lm(honsgrad ~ conscie.cent*psupport.cent, data = lab3) 
+m2 <- lm(honsgrad ~ conscie.cent*psupport.cent, data = lab3)
 # You can also do this: lm(honsgrad ~ conscie.cent + psupport.cent + conscie.cent:psupport.cent, data = lab3)
 ```
 
@@ -70,10 +71,66 @@ The model with interaction has an $R^2$ of .642 and the model without has an $R^
 The difference ($.642-.489=.153$) suggests that the model with interaction accounts for 15% more variance over and above the main effects of the model without interaction.
 
 ##### Plotting Interaction {-}
-https://stats.idre.ucla.edu/r/seminars/interactions-r/
+There are a few ways to plot a continuous x with a continuous moderator (z).  One of the most popular is *spotlight analysis* which was put forward by Leona Aiken and Stephen West.
 
-TBC
+The first thing we need to do is to turn our moderator (conscientiousness) into a categorical variable for which we can plot different lines with.  For spotlight analysis, it is recommended that the continuous moderator is turned into three levels (the mean, sd-1 and sd+1).
 
+```{r spotlight}
+# Creating 3 levels of consci (mean, sd-1, sd+1)
+consa <- round(mean(lab3$conscie) + sd(lab3$conscie), 1)
+cons <- round(mean(lab3$conscie), 1)
+consb <- round(mean(lab3$conscie) - sd(lab3$conscie), 1)
+
+tibble(
+  Low = consb,
+  Average = cons,
+  High = consa
+)
+
+```
+
+Once we have our moderator levels organised, we can plot the slope of Peer Support on Honours Grade by the different levels of conscientiousness.
+The quickest and easiest way to do this is to use the <code>emmip()</code> function in the **emmeans** package. The steps to do this are as follows:
+
+1. Create an interaction model without centring the predictors and moderator
+2. Create a list that includes the points for which you want to plot both your x variable and z variable
+  a. In this case we will plot Peer Support at equal intervals from 1 to 10
+3. Use <code>emmip</code> with the uncentred mode, at the points specified in 2.
+
+```{r plotting.int}
+m3 <- lm(honsgrad ~ conscie*psupport, data = lab3) # Interaction model no centring
+
+mylist <- list(psupport = seq(1, 10, 1), conscie = c(consb, cons, consa)) # Points to plot
+
+emmip(m3, conscie~psupport, at = mylist, CIs = TRUE) +
+  labs(x = "Peer Support", y = "Honours Grade")
+```
+We can also use ggplot to get more customisation out of our plot.  To do this, we just save the data from <code>emmip</code> into a dataframe instead of plotting it.  This can be achieve with the argument <code>plotit = FALSE</code>.  The data that is saved includes the x and y coordinates for each point specified in *mylist*.
+
+```{r int.ggplot.setup}
+m3dat <- emmip(m3, conscie~psupport, at = mylist, CIs = TRUE, plotit = FALSE)
+kableExtra::kable(head(m3dat)) %>% kableExtra::kable_styling("striped")
+```
+The first column tells us the observation number, and conscie and psupport are what we specified in mylist. The last two columns are the same corresponding variables, except renamed to tvar and xvar for internal purposes. The new column yvar represents the predicted values of honours grade for every combination of the IV and MV, and SE and df represent the standard error and degrees of freedom. Columns LCL and UCL represent the lower and upper limits of the 95% confidence interval, which we will use to create our confidence bands.
+
+
+Before we plot, we need to convert our moderator (conscientiousness) to a factor variable so that ggplot knows to plot separate lines:
+
+```{r}
+m3dat$conscie <- factor(m3dat$conscie)
+levels(m3dat$conscie) <- c("low", "average", "high")
+m3dat$conscie %>% head(5)
+```
+Now can start plotting using ggplot:
+
+```{r int.ggplot.plot}
+m3dat %>% 
+  ggplot(aes(x = psupport, y = yvar, col = conscie)) +
+  geom_line() +
+  geom_ribbon(aes(ymax = UCL, ymin = LCL, fill = conscie), alpha = 0.1) +
+  theme_light() +
+  labs(x = "Peer Support", y = "Honours Grade", fill = "Conscientiousness", col = "Conscientiousness")
+```
 
 
 
